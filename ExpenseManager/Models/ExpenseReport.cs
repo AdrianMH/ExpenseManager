@@ -15,8 +15,8 @@ namespace ExpenseManager.Models
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(10,2)")]
         public decimal Amount { get; set; }
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
         [MaxLength(100)]
         public string Description { get; set; }
@@ -27,6 +27,10 @@ namespace ExpenseManager.Models
     public class ExpenseDBContext : DbContext
     {
         public virtual DbSet<ExpenseReport> ExpenseReports { get; set; }
+        public ExpenseDBContext()
+        {
+
+        }
         public ExpenseDBContext(DbContextOptions options) : base(options) { }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpenseManager.Migrations
 {
     [DbContext(typeof(ExpenseDBContext))]
-    [Migration("20180820193750_ExpenseMigration")]
+    [Migration("20180823122810_ExpenseMigration")]
     partial class ExpenseMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
