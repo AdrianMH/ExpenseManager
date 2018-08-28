@@ -1,13 +1,12 @@
-﻿@model IEnumerable<ExpenseReport>
+﻿@model IEnumerable<ExpenseManager.Models.ExpenseReport>
 @{
     ViewData["Title"] = "Personal Expense Manager";
 }
-<link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-
-<script src="/lib/jquery/dist/jquery.js"></script>
-<script src="lib/bootstrap/dist/js/bootstrap.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet">
 
 <h2>Personal Expense Manager</h2>
 <br />
@@ -16,14 +15,14 @@
     <div style="float:left">
         <button class="btn btn-primary" onclick="AddEditExpenses(0)">Add Expense</button>
         <button class="btn btn-success" onclick="ExpenseReport()">Expense Report</button>
-        <div style="float:right" width="40%">
-            <form asp-controller="Expense" asp-action="Index" class="form-group">
-                <div class="col-sm-6">
-                    <input class="form-control" type="text" name="SearchString" placeholder="Search" />
-                </div>
-                <button type="submit" class="btn btn-info">Filter</button>
-            </form>
-        </div>
+    </div>
+    <div style="float:right" width="40%">
+        <form asp-controller="Expense" asp-action="Index" class="form-group">
+            <div class="col-sm-6">
+                <input class="form-control" type="text" name="SearchString" placeholder="Search" />
+            </div>
+            <button type="submit" class="btn btn-info">Filter</button>
+        </form>
     </div>
 </div>
 
@@ -35,7 +34,6 @@
             <th>@Html.DisplayNameFor(model => model.ItemId)</th>
             <th>@Html.DisplayNameFor(model => model.ItemName)</th>
             <th>@Html.DisplayNameFor(model => model.Amount)</th>
-            <th>@Html.DisplayNameFor(model => model.Description)</th>
             <th>@Html.DisplayNameFor(model => model.Date)</th>
             <th>@Html.DisplayNameFor(model => model.Category)></th>
         </tr>
@@ -47,14 +45,13 @@
                 <td>@Html.DisplayFor(modelItem => item.ItemId)</td>
                 <td>@Html.DisplayFor(modelItem => item.ItemName)</td>
                 <td>@Html.DisplayFor(modelItem => item.Amount)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
                 <td>@Html.DisplayFor(modelItem => item.Date)</td>
                 <td>@Html.DisplayFor(modelItem => item.Category)</td>
                 <td>
-                    <button class="btn btn-default" onclick="AddEditExpenses(@item.ItemId" )>Edit</button>
+                    <button class="btn btn-default" onclick="AddEditExpenses(@item.ItemId)">Edit</button>
                 </td>
                 <td>
-                    <button class="btn btn-danger" onclick="DeleteExpense(@item.ItemId">Delete</button>
+                    <button class="btn btn-danger" onclick="DeleteExpense(@item.ItemId)">Delete</button>
                 </td>
             </tr>
         }
@@ -68,7 +65,8 @@
                 <a href="#" class="close" data-dismiss="modal">&times;</a>
                 <h3 id="title" class="modal-title">Add Expense</h3>
             </div>
-            <div class="modal-body" id="expenseFormModalDiv"></div>
+            <div class="modal-body" id="expenseFormModalDiv">
+            </div>
         </div>
     </div>
 </div>
@@ -80,20 +78,21 @@
                 <a href="#" class="close" data-dismiss="modal">&times;</a>
                 <h3 id="title" class="modal-title">Expense Report</h3>
             </div>
-            <div class="modal-body" id="expenseReportDiv"></div>
+            <div class="modal-body" id="expenseReportModalDiv"></div>
         </div>
     </div>
 </div>
 
 <script>
+
     var AddEditExpenses = function (itemId) {
         var url = "/ExpenseReports/AddEditExpenses?itemId=" + itemId;
-        if (itemId > 0) {
+        if (itemId > 0)
             $('#title').html("Edit Expense");
-        }
 
         $("#expenseFormModalDiv").load(url, function () {
             $("#expenseFormModal").modal("show");
+
         });
 
         $('#expenseFormModel').on('shown.bs.modal', function () {
@@ -112,13 +111,14 @@
     var ExpenseReport = function () {
         var url = "/ExpenseReports/ExpenseSummary";
 
-        $('#expenseReportModalDiv').load(url, function () {
+        $("#expenseReportModalDiv").load(url, function () {
             $("#expenseReportModal").modal("show");
-        });
+        })
     }
 
     var DeleteExpense = function (itemId) {
-        var ans = confirm("Do you want to delete item with item ID: " + itemId);
+
+        var ans = confirm("Do you want to delete item with Item Id: " + itemId);
 
         if (ans) {
             $.ajax({
@@ -133,13 +133,14 @@
 </script>
 
 <script>
+
     $('body').on('click', "#btnSubmit", function () {
-        var formData = $("#expenseForm").serialize();
+        var myformdata = $("#expenseForm").serialize();
 
         $.ajax({
             type: "POST",
             url: "/ExpenseReports/Create",
-            data: formData,
+            data: myformdata,
             success: function () {
                 $("#myModal").modal("hide");
                 window.location.href = "/ExpenseReports/Index";

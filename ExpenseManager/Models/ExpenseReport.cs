@@ -18,8 +18,6 @@ namespace ExpenseManager.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
-        [MaxLength(100)]
-        public string Description { get; set; }
         [Required]
         public string Category { get; set; }
     }
@@ -27,10 +25,13 @@ namespace ExpenseManager.Models
     public class ExpenseDBContext : DbContext
     {
         public virtual DbSet<ExpenseReport> ExpenseReports { get; set; }
-        public ExpenseDBContext()
-        {
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Expenses;Trusted_Connection=True;");
+            }
         }
-        public ExpenseDBContext(DbContextOptions options) : base(options) { }
     }
 }

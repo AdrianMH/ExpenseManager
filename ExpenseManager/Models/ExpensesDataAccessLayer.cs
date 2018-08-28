@@ -6,7 +6,7 @@ namespace ExpenseManager.Models
 {
     public class ExpensesDataAccessLayer
     {
-        public ExpenseDBContext dbContext { get; set; }
+        ExpenseDBContext dbContext = new ExpenseDBContext();
 
         public IEnumerable<ExpenseReport> GetAllExpenses()
         {
