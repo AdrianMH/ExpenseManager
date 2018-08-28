@@ -46,7 +46,7 @@ namespace ExpenseManager.Models
             }
         }
 
-        public int UpdateExpense(Exception expense)
+        public int UpdateExpense(ExpenseReport expense)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace ExpenseManager.Models
             }
         }
 
-        public ExpenseReport GetExpenseData(int id)
+        public ExpenseReport GetExpenseData(int? id)
         {
             try
             {

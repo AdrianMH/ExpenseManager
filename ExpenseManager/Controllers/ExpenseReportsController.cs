@@ -2,39 +2,36 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ExpenseManager.Controllers
 {
     public class ExpenseReportsController : Controller
     {
-        private readonly ExpenseDBContext _context;
         ExpensesDataAccessLayer expDataAccess = new ExpensesDataAccessLayer();
 
         public ExpenseReportsController(ExpenseDBContext context)
         {
-            _context = context;
             expDataAccess.dbContext = context;
         }
 
         //TODO Decide if this mode or the one in article
 
         // GET: ExpenseReports
-        public ActionResult<IActionResult> Index()
+        public IActionResult Index()
         {
             return View(expDataAccess.GetAllExpenses().ToList());
         }
 
         // GET: ExpenseReports/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var expenseReport = await _context.ExpenseReports
-                .FirstOrDefaultAsync(m => m.ItemId == id);
+            var expenseReport = expDataAccess.GetAllExpenses()
+                .FirstOrDefault(m => m.ItemId == id);
             if (expenseReport == null)
             {
                 return NotFound();
@@ -43,10 +40,14 @@ namespace ExpenseManager.Controllers
             return View(expenseReport);
         }
 
-        // GET: ExpenseReports/Create
-        public IActionResult Create()
+        public IActionResult AddEditExpenses(int itemId)
         {
-            return View();
+            var model = new ExpenseReport();
+            if (itemId > 0)
+            {
+                model = expDataAccess.GetExpenseData(itemId);
+            }
+            return PartialView("_expenseForm", model);
         }
 
         // POST: ExpenseReports/Create
@@ -54,26 +55,31 @@ namespace ExpenseManager.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ItemId,ItemName,Amount,Date,Description,Category")] ExpenseReport expenseReport)
+        public IActionResult Create([Bind("ItemId,ItemName,Amount,Date,Description,Category")] ExpenseReport expenseReport)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(expenseReport);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (expenseReport.ItemId > 0)
+                {
+                    expDataAccess.UpdateExpense(expenseReport);
+                }
+                else
+                {
+                    expDataAccess.AddExpense(expenseReport);
+                }
             }
-            return View(expenseReport);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ExpenseReports/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var expenseReport = await _context.ExpenseReports.FindAsync(id);
+            var expenseReport = expDataAccess.GetExpenseData(id);
             if (expenseReport == null)
             {
                 return NotFound();
@@ -86,7 +92,7 @@ namespace ExpenseManager.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ItemId,ItemName,Amount,Date,Description,Category")] ExpenseReport expenseReport)
+        public IActionResult Edit(int id, [Bind("ItemId,ItemName,Amount,Date,Description,Category")] ExpenseReport expenseReport)
         {
             if (id != expenseReport.ItemId)
             {
@@ -97,8 +103,7 @@ namespace ExpenseManager.Controllers
             {
                 try
                 {
-                    _context.Update(expenseReport);
-                    await _context.SaveChangesAsync();
+                    expDataAccess.UpdateExpense(expenseReport);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,15 +122,14 @@ namespace ExpenseManager.Controllers
         }
 
         // GET: ExpenseReports/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var expenseReport = await _context.ExpenseReports
-                .FirstOrDefaultAsync(m => m.ItemId == id);
+            var expenseReport = expDataAccess.GetExpenseData(id);
             if (expenseReport == null)
             {
                 return NotFound();
@@ -137,17 +141,30 @@ namespace ExpenseManager.Controllers
         // POST: ExpenseReports/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var expenseReport = await _context.ExpenseReports.FindAsync(id);
-            _context.ExpenseReports.Remove(expenseReport);
-            await _context.SaveChangesAsync();
+            expDataAccess.DeleteExpense(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ExpenseSummary()
+        {
+            return PartialView("_expenseReport");
+        }
+
+        public JsonResult GetMonthlyExpense()
+        {
+            return new JsonResult(expDataAccess.CalculateMonthlyExpense());
+        }
+
+        public JsonResult GetWeeklyExpense()
+        {
+            return new JsonResult(expDataAccess.CalculateWeeklyExpense());
         }
 
         private bool ExpenseReportExists(int id)
         {
-            return _context.ExpenseReports.Any(e => e.ItemId == id);
+            return expDataAccess.GetAllExpenses().Any(e => e.ItemId == id);
         }
     }
 }
