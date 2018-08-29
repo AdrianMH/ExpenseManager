@@ -6,7 +6,12 @@ namespace ExpenseManager.Models
 {
     public class ExpensesDataAccessLayer
     {
-        ExpenseDBContext dbContext = new ExpenseDBContext();
+        ExpenseDBContext dbContext;
+
+        public ExpensesDataAccessLayer(ExpenseDBContext context)
+        {
+            dbContext = context;
+        }
 
         public IEnumerable<ExpenseReport> GetAllExpenses()
         {
@@ -90,15 +95,15 @@ namespace ExpenseManager.Models
         {
             var dictMonthlySum = new Dictionary<string, decimal>();
 
-            decimal foodSum = dbContext.ExpenseReports.Where(f => f.Category == "Food" && (f.Date > DateTime.Now.AddMonths(-7)))
+            decimal foodSum = dbContext.ExpenseReports.Where(f => f.Category == "Food" && (f.Date > DateTime.Now.AddMonths(-6)))
                 .Select(f => f.Amount)
                 .Sum();
 
-            decimal shoppingSum = dbContext.ExpenseReports.Where(s => s.Category == "Shopping" && (s.Date > DateTime.Now.AddMonths(-7)))
+            decimal shoppingSum = dbContext.ExpenseReports.Where(s => s.Category == "Shopping" && (s.Date > DateTime.Now.AddMonths(-6)))
                 .Select(s => s.Amount)
                 .Sum();
 
-            decimal travelingSum = dbContext.ExpenseReports.Where(t => t.Category == "Traveling" && (t.Date > DateTime.Now.AddMonths(-7)))
+            decimal travelingSum = dbContext.ExpenseReports.Where(t => t.Category == "Traveling" && (t.Date > DateTime.Now.AddMonths(-6)))
                 .Select(t => t.Amount)
                 .Sum();
 

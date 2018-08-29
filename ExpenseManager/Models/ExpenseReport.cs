@@ -15,8 +15,8 @@ namespace ExpenseManager.Models
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(10,2)")]
         public decimal Amount { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
         [Required]
         public string Category { get; set; }
@@ -26,12 +26,7 @@ namespace ExpenseManager.Models
     {
         public virtual DbSet<ExpenseReport> ExpenseReports { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Expenses;Trusted_Connection=True;");
-            }
-        }
+        public ExpenseDBContext() { }
+        public ExpenseDBContext(DbContextOptions<ExpenseDBContext> options) : base(options) { }
     }
 }

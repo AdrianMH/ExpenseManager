@@ -6,8 +6,12 @@ namespace ExpenseManager.Controllers
 {
     public class ExpenseReportsController : Controller
     {
-        ExpensesDataAccessLayer expDataAccess = new ExpensesDataAccessLayer();
+        ExpensesDataAccessLayer expDataAccess;
 
+        public ExpenseReportsController(ExpenseDBContext context)
+        {
+            expDataAccess = new ExpensesDataAccessLayer(context);
+        }
         // GET: ExpenseReports
         public IActionResult Index(string searchString)
         {
@@ -33,7 +37,6 @@ namespace ExpenseManager.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Create(ExpenseReport expenseReport)
         {
             if (ModelState.IsValid)
@@ -50,21 +53,11 @@ namespace ExpenseManager.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: ExpenseReports/Delete/5
-        public IActionResult Delete(int? id)
+        [HttpPost]
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var expenseReport = expDataAccess.GetExpenseData(id);
-            if (expenseReport == null)
-            {
-                return NotFound();
-            }
-
-            return View(expenseReport);
+            expDataAccess.DeleteExpense(id);
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: ExpenseReports/Delete/5

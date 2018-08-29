@@ -5,7 +5,7 @@
 <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet">
 
 <h2>Personal Expense Manager</h2>
@@ -95,15 +95,17 @@
 
         });
 
-        $('#expenseFormModel').on('shown.bs.modal', function () {
+        $('#expenseFormModal').on('shown.bs.modal', function () {
 
-            $('#calender-container .input-group.date').datepicker({
+            $('#calender-container .input-group.date').datepicker("setDate", new Date()).datepicker({
+                dateFormat: "d MM, y",
+                format: "yy-mm-dd",
+                formatDate: "yy-mm-dd",
                 todayBtn: true,
                 calendarWeeks: true,
                 todayHighlight: true,
                 autoclose: true,
-                container: '#expenseFormModel modal-body'
-            });
+            }).datepicker("formatDate", new Date());
 
         });
     }

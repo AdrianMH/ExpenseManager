@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using ExpenseManager.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +11,7 @@ namespace ExpenseManager
 {
     public class Startup
     {
+        public static string ConnectionString { get; set; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +31,8 @@ namespace ExpenseManager
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDbContext<ExpenseDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ExpenseDatabase")));
+            ConnectionString = Configuration.GetConnectionString("ExpenseDatabase");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
