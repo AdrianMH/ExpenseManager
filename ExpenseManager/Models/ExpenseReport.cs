@@ -15,8 +15,7 @@ namespace ExpenseManager.Models
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(10,2)")]
         public decimal Amount { get; set; }
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
         public DateTime Date { get; set; }
         [Required]
         public string Category { get; set; }
