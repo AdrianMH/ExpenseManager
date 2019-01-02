@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpenseManager.Migrations
 {
     [DbContext(typeof(ExpenseDBContext))]
-    [Migration("20180823122810_ExpenseMigration")]
-    partial class ExpenseMigration
+    [Migration("20190102105039_ExpenseReport")]
+    partial class ExpenseReport
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -34,9 +34,6 @@ namespace ExpenseManager.Migrations
                         .IsRequired();
 
                     b.Property<DateTime>("Date");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(100);
 
                     b.Property<string>("ItemName")
                         .IsRequired();
